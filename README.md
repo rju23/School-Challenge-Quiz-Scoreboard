@@ -1,3 +1,8 @@
+⚠️ Non-Commercial Use Only
+You may use this platform freely for personal, educational, or school purposes.
+Do NOT sell or claim ownership.
+Please send feedback for bugs or improvements via GitHub issues or email.
+
 # **School's Challenge Quiz Scoreboard**
 
 ---
