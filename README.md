@@ -86,12 +86,18 @@ This is a **real-time quiz scoreboard platform** for secondary school competitio
 
 ---
 
-## **💬 Feedback**
+## 🐞 Feedback & Bug Reports
 
-If you have suggestions, ideas for new features, or bug reports:
+If you find any bugs, have suggestions, or want improvements, please submit them via GitHub Issues:
 
-- Open an **Issue** on this GitHub repository.
-- Contact the author via GitHub or your preferred method (email or social media).
+1. Go to the [Issues tab](https://github.com/yourusername/quiz-scoreboard/issues)
+2. Click **New Issue**
+3. Choose **Bug Report** or **Feature Request**
+4. Describe the problem or suggestion in detail
+5. Submit it
+
+Your feedback helps improve the Quiz Scoreboard Platform!
+Contact the author via GitHub or your preferred method (email or social media).
 
 ---
 
