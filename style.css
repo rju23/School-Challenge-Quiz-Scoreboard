@@ -1,0 +1,196 @@
+/* ============================= */
+/* Quiz Scoreboard - Styles       */
+/* ============================= */
+
+/* ----------------------------- */
+/* 1. Overlay & Popup Panel       */
+/* ----------------------------- */
+
+/* Overlay background */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  z-index: 10;
+}
+
+/* Popup panel */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  color: white;
+  padding: 25px;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  display: none;
+  z-index: 11;
+}
+
+/* Popup inputs and buttons */
+.popup input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.popup button {
+  margin: 5px 0;
+  width: 100%;
+}
+
+/* ----------------------------- */
+/* 2. Header & Controls           */
+/* ----------------------------- */
+.control-header {
+  display: flex;
+  align-items: center;           /* vertically center button + heading */
+  justify-content: space-between; /* push left and right to edges */
+  margin: 20px;
+}
+
+#settingsBtn {
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+.control-heading {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;                  /* takes remaining space to center */
+  margin: 0;
+}
+
+.header-spacer {
+  width: 60px;                    /* same as approximate button width */
+}
+
+/* ----------------------------- */
+/* 3. Team Buttons / Controls     */
+/* ----------------------------- */
+.team-buttons-container {
+  display: flex;
+  flex-direction: column;   /* stack Team A above Team B */
+  gap: 20px;                /* space between Team A and B rows */
+  margin-top: 20px;
+  margin-left: 20px;        /* slight left margin for alignment */
+}
+
+.team-buttons {
+  display: flex;            /* horizontal layout for each team */
+  flex-direction: row;      /* horizontal stacking of buttons */
+  gap: 10px;                /* space between buttons in the row */
+  align-items: center;      /* vertically center buttons */
+}
+
+/* ----------------------------- */
+/* 4. Timer Section               */
+/* ----------------------------- */
+.timer-section {
+  width: 90%;
+  max-width: 800px;
+  margin: 20px 0;      /* vertical spacing only */
+}
+
+.timer-heading {
+  margin: 0 0 10px 0;  /* space below heading */
+  text-align: left;    /* align heading to far left */
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.timer-row {
+  display: flex;
+  justify-content: space-between; /* controls left, timer right */
+  align-items: center;
+}
+
+/* Question Timer */
+.question-timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* keep timer and note aligned to right */
+  position: relative;
+}
+
+#questionTimer {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#questionInfoBtn {
+  margin-top: 5px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+/* Question Note Popup */
+#questionNote {
+  position: absolute;
+  top: 35px; /* below the button */
+  right: 0;
+  width: 220px; /* adjust width as needed */
+  background: #222;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: none; /* hidden by default */
+  z-index: 10;
+}
+
+#questionNote.visible {
+  display: block;
+}
+
+/* ----------------------------- */
+/* 5. Settings Tabs               */
+/* ----------------------------- */
+.settings-tabs {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px;
+  cursor: pointer;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  font-weight: bold;
+}
+
+.tab-btn.active {
+  background: #555;
+}
+
+.tab-content {
+  background: #111;
+  color: white;
+  padding: 15px;
+  border: 1px solid #444;
+}
+
+.hidden {
+  display: none;
+}
