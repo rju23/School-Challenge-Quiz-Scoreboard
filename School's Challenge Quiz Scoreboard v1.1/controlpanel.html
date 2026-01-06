@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Scoreboard Control</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="control-header">
+  <button id="settingsBtn" onclick="openSettings()">⚙ Settings</button>
+  <h1 class="control-heading">Control Panel</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<!-- Question Tracker -->
+<table border="1" cellpadding="8" cellspacing="0" style="color:white; background:black; width:100%; text-align:center;">
+  <thead>
+    <tr>
+      <th>Round / Time</th>
+      <th id="trackerTeamA">Team A</th>
+      <th id="trackerTeamB">Team B</th>
+    </tr>
+  </thead>
+  <tbody id="trackerBody">
+    <tr>
+      <td>ALTERNATE</td>
+      <td id="trackA_ALTERNATE"></td>
+      <td id="trackB_ALTERNATE"></td>
+    </tr>
+    <tr>
+      <td>Minute 1</td>
+      <td id="trackA_SPEED_1"></td>
+      <td id="trackB_SPEED_1"></td>
+    </tr>
+    <tr>
+      <td>Minute 2</td>
+      <td id="trackA_SPEED_2"></td>
+      <td id="trackB_SPEED_2"></td>
+    </tr>
+    <tr>
+      <td>Minute 3</td>
+      <td id="trackA_SPEED_3"></td>
+      <td id="trackB_SPEED_3"></td>
+    </tr>
+    <tr>
+      <td>BUZZER</td>
+      <td id="trackA_BUZZER"></td>
+      <td id="trackB_BUZZER"></td>
+    </tr>
+  </tbody>
+</table>
+
+<audio id="bellSound">
+  <source src="bell.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<audio id="questionBell">
+  <source src="question_bell.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<!-- TEAM Controls -->
+<div class="team-buttons-container">
+
+  <!-- Team A Buttons -->
+  <div class="team-buttons" id="teamAButtons">
+    <button id="btnACorrect" onclick="teamACorrect()">Team A Correct</button>
+    <button id="btnAWrong" onclick="teamAWrong()">Team A Wrong</button>
+    <button id="queryDeductA" onclick="queryDeduct('A')">Team A Query Deduction</button>
+  </div>
+
+  <!-- Team B Buttons -->
+  <div class="team-buttons" id="teamBButtons">
+    <button id="btnBCorrect" onclick="teamBCorrect()">Team B Correct</button>
+    <button id="btnBWrong" onclick="teamBWrong()">Team B Wrong</button>
+    <button id="queryDeductB" onclick="queryDeduct('B')">Team B Query Deduction</button>
+  </div>
+
+</div>
+
+
+<div class="timer-section">
+  <h3 class="timer-heading">Timer Controls</h3>
+  <div class="timer-row">
+    <div class="timer-controls">
+      <h4 class="subheading">Main Timer</h4>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+    <div class="question-timer-container">
+      <h4 class="subheading">Question Timer</h4>
+      <div id="questionTimer" style="font-size: 3rem; margin: 10px 0;">--</div>
+      <button id="questionInfoBtn" onclick="toggleQuestionNote()">❔</button>
+      <div id="questionNote" class="hidden">
+        10s to Answer in Alternate and 5s in Buzzer.<br>
+        Press “R/r” to start/restart and “P/p” to pause.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<div id="settingsOverlay" class="overlay" onclick="closeSettings()"></div>
+
+<!-- SETTINGS POPUP WITH TABS -->
+<div id="settingsPopup" class="popup">
+  <div class="settings-tabs">
+    <button class="tab-btn active" onclick="openTab('settings')">Settings</button>
+    <button class="tab-btn" onclick="openTab('howToUse')">How to Use</button>
+    <button class="tab-btn" onclick="openTab('about')">About</button>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="settings" class="tab-content">
+    <h2>Match Settings</h2>
+    <h3>Team Names</h3>
+    <input id="teamANameInput" placeholder="Team A Name">
+    <input id="teamBNameInput" placeholder="Team B Name">
+    <button onclick="setTeamNames()">Update Names</button>
+    <hr>
+    <h3>Reset</h3>
+    <button onclick="resetMatch()">Reset Scores</button>
+    <hr>
+    <h3>Select Section</h3>
+    <button onclick="setRound('ALTERNATE')">Alternate</button>
+    <h4>Speed</h4>
+    <button onclick="setSpeedMinute(1)">Minute 1</button>
+    <button onclick="setSpeedMinute(2)">Minute 2</button>
+    <button onclick="setSpeedMinute(3)">Minute 3</button>
+    <button onclick="setRound('BUZZER')">Buzzer</button>
+    <h4>Custom</h4>
+    <button onclick="setCustomRound('ALTERNATE')">Custom Alternate</button>
+    <button onclick="setCustomRound('SPEED')">Custom Speed</button>
+    <button onclick="setCustomRound('BUZZER')">Custom Buzzer</button>
+    <br><br>
+    <button onclick="closeSettings()">Close</button>
+  </div>
+
+  <!-- HOW TO USE TAB -->
+  <div id="howToUse" class="tab-content hidden">
+    <pre style="white-space: pre-wrap; font-family: inherit;">
+A. How to Set Up
+
+The School's Challenge Quiz Scoreboard works best on a PC or laptop with a connected second screen (preferably wired).
+
+1. Connect the second screen to the PC/laptop (likely via HDMI cable).
+
+2. Set projection mode to Extend. (Projection modes on a PC/Laptop include PC/laptop screen only, Duplicate, EXTEND and Second screen only.)
+
+3. Open the platform.
+
+4. Drag the main scoreboard to right (or sometimes left) of your pc/laptop screen until it appears on the second screen. (The second screen is an extension of the PC/laptop screen.)
+
+5. Control panel remains on the PC/laptop screen for the coach to manage scores and timers.
+
+6. The teams see only the main scoreboard on the second screen, while the coach manages the control panel.
+
+B. How to Use
+
+- Settings Menu
+
+Team Names: Enter the names of the teams and press "Update Names".
+
+Select Section: Choose the section currently being played.
+
+Timers adjust automatically, however, custom timers are also available for flexibility during practice.
+
+Reset Scores: Press "Reset Scores" to clear all scores. Note/ A prompt will appear to confirm your choice, preventing accidental resets.
+
+- Main Page of Control Panel
+
+  > Scoreboard
+
+Displays scores similar to the usual training method.
+
+  > Scoring Buttons
+
+Correct/Wrong Buttons:
+
+Keyboard shortcuts
+Team A correct - press number "1" 
+Team A wrong- press number "2" 
+Team B correct - press number "8" 
+Team B wrong- press number "9" 
+
+Alternate & Speed Sections -
+Wrong button marks an "X" on the control panel only; main scoreboard does not change.
+Query deduction button allows point removal with a confirmation prompt. Point removal is seen on the main scoreboard but not the control panel.
+
+Buzzer Section -
+Wrong button deducts -2 points on the main scoreboard and marks an "X" on the control panel.
+
+Timer
+
+Main Timer: Controlled with Start, Pause, Reset.
+Bell sound plays when time runs out.
+
+Question Timer:
+Alternate Section: 10 seconds per question.
+Buzzer Section: 5 seconds per question.
+Start/Restart: Press “R/r”.
+Pause: Press “P/p”.
+Procedure:
+1. Reader finishes reading the question → press R to start timer.
+2. If the team answers before time runs out → press P to pause.
+3. After next question → press R to restart.
+Bell sound plays if time expires before an answer.
+    </pre>
+  </div>
+
+  <!-- ABOUT TAB -->
+  <div id="about" class="tab-content hidden">
+    <pre style="white-space: pre-wrap; font-family: inherit;">
+About
+
+The School's Challenge Quiz Scoreboard for secondary-level schools was created for team practice sessions. It combines scoring and timing into one platform to give training teams an experience similar to what happens on stage at TVJ. At TVJ, students are only allowed see their numerical scores increase (or decrease in the buzzer section) without knowing which questions were answered correctly or incorrectly. 
+During practice, teams sit in the same positions they would on television and follow the same match format. Now, scoring and timing are displayed in the same style as the TV version with this platform.
+
+The control panel which is not visible to students, allows coaches to track scores and manage time together. 
+
+However, since there were some observed benefits to the way it was normally done in practice, the control panel still tracks scores in that method. Benefits to tracking scores with the method currently used in training include: 
+
+• Seeing how many questions were faced in the alternate or speed sections
+• Identify which questions were answered incorrectly in each section for quering purposes
+• Observe the team’s buzzing patterns
+
+Version 1.0
+    </pre>
+  </div>
+</div>
+
+<script>
+function openTab(tabId) {
+  // Hide all tab contents
+  const tabs = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => tab.classList.add('hidden'));
+
+  // Remove active class from all buttons
+  const btns = document.querySelectorAll('.tab-btn');
+  btns.forEach(btn => btn.classList.remove('active'));
+
+  // Show selected tab
+  document.getElementById(tabId).classList.remove('hidden');
+  document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`).classList.add('active');
+}
+
+function openSettings() {
+  document.getElementById('settingsOverlay').style.display = 'block';
+  document.getElementById('settingsPopup').style.display = 'block';
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').style.display = 'none';
+  document.getElementById('settingsPopup').style.display = 'none';
+}
+
+// Keyboard shortcuts for team scoring
+document.addEventListener("keydown", function(event) {
+  switch(event.key) {
+    case "1": // Team A Correct
+      teamACorrect();
+      break;
+    case "2": // Team A Wrong
+      teamAWrong();
+      break;
+    case "8": // Team B Correct
+      teamBCorrect();
+      break;
+    case "9": // Team B Wrong
+      teamBWrong();
+      break;
+  }
+});
+</script>
+
+</body>
+</html>
