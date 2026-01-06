@@ -104,6 +104,13 @@
 
 <div id="settingsOverlay" class="overlay" onclick="closeSettings()"></div>
 
+<!-- Visual Upload -->
+<div class="visual-upload">
+  <label><strong>Upload Visual Questions</strong></label><br>
+  <input type="file" id="imageUpload" accept="image/*" multiple>
+</div>
+
+
 <!-- SETTINGS POPUP WITH TABS -->
 <div id="settingsPopup" class="popup">
   <div class="settings-tabs">
@@ -232,6 +239,12 @@ Version 1.0
 </div>
 
 <script>
+// Clear previous visual data on fresh load
+localStorage.removeItem("visualQueue");
+localStorage.removeItem("currentVisualIndex");
+localStorage.removeItem("showVisualTrigger");
+localStorage.setItem("visualsReady", "false");
+
 function openTab(tabId) {
   // Hide all tab contents
   const tabs = document.querySelectorAll('.tab-content');
@@ -271,6 +284,38 @@ document.addEventListener("keydown", function(event) {
     case "9": // Team B Wrong
       teamBWrong();
       break;
+  }
+});
+
+// Visual Upload Logic
+document.getElementById("imageUpload").addEventListener("change", function (e) {
+  const files = Array.from(e.target.files);
+
+  // Reset queue explicitly
+  visualQueue = [];
+  localStorage.setItem("currentVisualIndex", 0);
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      visualQueue.push(event.target.result);
+      localStorage.setItem("visualQueue", JSON.stringify(visualQueue));
+      localStorage.setItem("visualsReady", "true");
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+// Double Right Arrow Trigger
+let lastArrowTime = 0;
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight") {
+    const now = Date.now();
+    if (now - lastArrowTime < 400) { // double tap detection
+      localStorage.setItem("showVisualTrigger", Date.now());
+    }
+    lastArrowTime = now;
   }
 });
 </script>
