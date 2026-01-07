@@ -1,26 +1,17 @@
 {
-  "name": "school's-challenge-quiz-scoreboard",
-  "version": "1.0.0",
-  "description": "⚠️ Non-Commercial Use Only\r You may use this platform freely for personal, educational, or school purposes.\r Do NOT sell or claim ownership.\r Please send feedback for bugs or improvements via GitHub issues or email.",
-  "main": "script.js",
+  "name": "schools-challenge-quiz-scoreboard",
+  "version": "1.1.0",
+  "description": "Desktop version of the Challenge Quiz Scoreboard for secondary-level schools",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "pack": "electron-packager . QuizScoreboard --platform=win32 --arch=x64 --out=dist --overwrite",
+    "build": "electron-packager . QuizScoreboard --platform=win32 --arch=x64 --out=dist --overwrite"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rju23/School-Challenge-Quiz-Scoreboard.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/rju23/School-Challenge-Quiz-Scoreboard/issues"
-  },
-  "homepage": "https://github.com/rju23/School-Challenge-Quiz-Scoreboard#readme",
+  "author": "Prakash Sejwani",
+  "license": "MIT",
   "devDependencies": {
-    "electron": "^39.2.7"
+    "electron": "^26.2.0",
+    "electron-packager": "^17.1.0"
   }
 }
-
-
