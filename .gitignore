@@ -1,4 +1,11 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
-.env
+
+# Logs
 *.log
+
+# Environment files
+.env
