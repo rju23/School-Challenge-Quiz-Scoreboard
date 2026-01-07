@@ -60,9 +60,19 @@ function updateDisplay() {
   if (scoreElB) scoreElB.innerText = scoreB;
 
   // Update Timer
-  const timerEl = document.getElementById("timer");
-  if (timerEl)
-    timerEl.innerText = `${String(Math.floor(timeRemaining / 60)).padStart(2, "0")}:${String(timeRemaining % 60).padStart(2, "0")}`;
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = timeRemaining % 60;
+  const formatted =
+    String(minutes).padStart(2, '0') + ":" +
+    String(seconds).padStart(2, '0');
+
+  // Main scoreboard
+  const mainTimer = document.getElementById("timer");
+  if (mainTimer) mainTimer.innerText = formatted;
+
+  // Control panel
+  const controlTimer = document.getElementById("control-timer");
+  if (controlTimer) controlTimer.innerText = formatted;
 
   // Update Round
   const roundEl = document.getElementById("round");
@@ -140,6 +150,28 @@ function startTimer() {
 function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
 function resetTimer() { pauseTimer(); timeRemaining = currentRound.duration; localStorage.setItem("timeRemaining", timeRemaining); }
 
+function applyCustomTime() {
+  const input = document.getElementById("customTimeInput");
+  if (!input) return;
+
+  const seconds = parseInt(input.value);
+
+  if (isNaN(seconds) || seconds <= 0) {
+    alert("Enter a valid number of seconds.");
+    return;
+  }
+
+  // Stop timers cleanly
+  pauseTimer();
+  pauseQuestionTimer();
+
+  // Apply new time
+  timeRemaining = seconds;
+  localStorage.setItem("timeRemaining", timeRemaining);
+
+  updateDisplay();
+}
+
 // ------------------------
 // 7. Question Timer
 // ------------------------
@@ -197,12 +229,6 @@ function setSpeedMinute(minute) {
 }
 
 function setCustomRound(roundName) {
-  if (!rounds[roundName]) return alert("Invalid section.");
-  const input = prompt(`Enter custom time in seconds for ${roundName} section:`);
-  if (input === null) return;
-  const customSeconds = parseInt(input);
-  if (isNaN(customSeconds) || customSeconds <= 0) return alert("Please enter a valid number of seconds.");
-
   pauseTimer();
   pauseQuestionTimer();
 
@@ -384,4 +410,41 @@ document.addEventListener("keydown", function(event) {
 // ------------------------
 updateDisplay();
 syncTeamNamesOnLoad();
+function highlightActiveRound(roundId) {
+  document.querySelectorAll(".round-selector").forEach(el => {
+    el.classList.remove("active");
+  });
+
+  const activeEl = document.querySelector(`.round-selector[data-round="${roundId}"]`);
+  if (activeEl) activeEl.classList.add("active");
+}
+
+// Round selector click for quick round change
+document.querySelectorAll(".round-selector").forEach(el => {
+  el.style.cursor = "pointer";
+  el.addEventListener("click", () => {
+    const roundId = el.dataset.round;
+
+    if (roundId.startsWith("SPEED")) {
+      const minute = parseInt(roundId.split("_")[1]);
+      setSpeedMinute(minute);
+      highlightActiveRound(roundId);  // highlight SPEED minute clicked
+    } else {
+      setRound(roundId);
+      highlightActiveRound(roundId);  // highlight ALTERNATE or BUZZER
+    }
+  });
+});
+
+// On page load
+const storedRound = localStorage.getItem("currentRound");
+if (storedRound) {
+  if (storedRound === "SPEED") {
+    highlightActiveRound(`SPEED_${currentSpeedMinute}`);
+  } else {
+    highlightActiveRound(storedRound);
+  }
+}
+
+
 

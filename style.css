@@ -194,3 +194,21 @@
 .hidden {
   display: none;
 }
+
+/* ----------------------------- */
+/* 6. Round Selector              */
+/* ----------------------------- */
+.round-selector {
+  color: rgb(66, 66, 209);      /* blue */
+  font-weight: bold;
+  text-decoration: underline;
+}
+.round-selector:hover {
+  color: #ff0;      /* yellow on hover */
+}
+
+.round-selector.active {
+  color: #0f0;       /* green when selected */
+  font-weight: bold;
+  text-decoration: underline;
+}

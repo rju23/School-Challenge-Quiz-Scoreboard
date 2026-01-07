@@ -23,30 +23,30 @@
   </thead>
   <tbody id="trackerBody">
     <tr>
-      <td>ALTERNATE</td>
-      <td id="trackA_ALTERNATE"></td>
-      <td id="trackB_ALTERNATE"></td>
-    </tr>
-    <tr>
-      <td>Minute 1</td>
-      <td id="trackA_SPEED_1"></td>
-      <td id="trackB_SPEED_1"></td>
-    </tr>
-    <tr>
-      <td>Minute 2</td>
-      <td id="trackA_SPEED_2"></td>
-      <td id="trackB_SPEED_2"></td>
-    </tr>
-    <tr>
-      <td>Minute 3</td>
-      <td id="trackA_SPEED_3"></td>
-      <td id="trackB_SPEED_3"></td>
-    </tr>
-    <tr>
-      <td>BUZZER</td>
-      <td id="trackA_BUZZER"></td>
-      <td id="trackB_BUZZER"></td>
-    </tr>
+  <td><span class="round-selector" data-round="ALTERNATE">ALTERNATE</span></td>
+  <td id="trackA_ALTERNATE"></td>
+  <td id="trackB_ALTERNATE"></td>
+</tr>
+<tr>
+  <td><span class="round-selector" data-round="SPEED_1">Minute 1</span></td>
+  <td id="trackA_SPEED_1"></td>
+  <td id="trackB_SPEED_1"></td>
+</tr>
+<tr>
+  <td><span class="round-selector" data-round="SPEED_2">Minute 2</span></td>
+  <td id="trackA_SPEED_2"></td>
+  <td id="trackB_SPEED_2"></td>
+</tr>
+<tr>
+  <td><span class="round-selector" data-round="SPEED_3">Minute 3</span></td>
+  <td id="trackA_SPEED_3"></td>
+  <td id="trackB_SPEED_3"></td>
+</tr>
+<tr>
+  <td><span class="round-selector" data-round="BUZZER">BUZZER</span></td>
+  <td id="trackA_BUZZER"></td>
+  <td id="trackB_BUZZER"></td>
+</tr>
   </tbody>
 </table>
 
@@ -87,7 +87,20 @@
       <button onclick="startTimer()">Start</button>
       <button onclick="pauseTimer()">Pause</button>
       <button onclick="resetTimer()">Reset</button>
+    <div style="margin-top: 10px;">
+  <input
+    type="number"
+    id="customTimeInput"
+    placeholder="Seconds"
+    min="1"
+    style="width: 120px;"
+  >
+  <button onclick="applyCustomTime()">Set Custom Time</button>
+</div>  
     </div>
+    <div id="control-timer" style="font-size: 48px; font-weight: bold;">
+  00:00
+</div>
     <div class="question-timer-container">
       <h4 class="subheading">Question Timer</h4>
       <div id="questionTimer" style="font-size: 3rem; margin: 10px 0;">--</div>
@@ -132,16 +145,11 @@
     <hr>
     <h3>Select Section</h3>
     <button onclick="setRound('ALTERNATE')">Alternate</button>
-    <h4>Speed</h4>
     <button onclick="setSpeedMinute(1)">Minute 1</button>
     <button onclick="setSpeedMinute(2)">Minute 2</button>
     <button onclick="setSpeedMinute(3)">Minute 3</button>
     <button onclick="setRound('BUZZER')">Buzzer</button>
     <h4>Custom</h4>
-    <button onclick="setCustomRound('ALTERNATE')">Custom Alternate</button>
-    <button onclick="setCustomRound('SPEED')">Custom Speed</button>
-    <button onclick="setCustomRound('BUZZER')">Custom Buzzer</button>
-    <br><br>
     <button onclick="closeSettings()">Close</button>
   </div>
 
@@ -170,9 +178,9 @@ B. How to Use
 
 Team Names: Enter the names of the teams and press "Update Names".
 
-Select Section: Choose the section currently being played.
+Select Section: Choose the section currently being played. Note also in the recent update (v1.1.0), you can now select the section of the match by clicking on the round names in the question tracker table.
 
-Timers adjust automatically, however, custom timers are also available for flexibility during practice.
+Timers adjust automatically, however, in the recent update (v1.1.0), you can now set custom time for the main timer using the input box in the timer section.
 
 Reset Scores: Press "Reset Scores" to clear all scores. Note/ A prompt will appear to confirm your choice, preventing accidental resets.
 
@@ -184,7 +192,7 @@ Displays scores similar to the usual training method.
 
   > Scoring Buttons
 
-Correct/Wrong Buttons:
+Correct/Wrong Buttons: Press the respective buttons for each team to update scores based on their answers. Alternately, you can use the keyboard shortcuts listed below for quicker scoring.
 
 Keyboard shortcuts
 Team A correct - press number "1" 
@@ -214,6 +222,13 @@ Procedure:
 2. If the team answers before time runs out → press P to pause.
 3. After next question → press R to restart.
 Bell sound plays if time expires before an answer.
+
+- Visual Questions Upload
+This is the newest feature added in version 1.1.0. Upload images of visual questions in the order you want for the entire match using the "Upload Visual Questions" section in the control panel. 
+Then, during the match, double-tap the right arrow key to display the next visual question on the main scoreboard screen. This visual will stay visible for 2s after which it will automatically hide. 
+Note that you CANNOT cycle through the visuals again, the control panel has to be reloaded (Ctrl + R) and the same or new visuals reuploaded to reset the visual queue.
+To get the best view, ensure that images are landscape oriented and of high resolution. A canva link has been provided below to help you create custom visual question slides:
+https://www.canva.com/design/DAG9viZJQ3Q/ixtnxn9PeTSVQZrxRUlczw/edit?utm_content=DAG9viZJQ3Q&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
     </pre>
   </div>
 
@@ -221,19 +236,20 @@ Bell sound plays if time expires before an answer.
   <div id="about" class="tab-content hidden">
     <pre style="white-space: pre-wrap; font-family: inherit;">
 About
+v1.1.0 now comes as desktop downloadable version.
 
-The School's Challenge Quiz Scoreboard for secondary-level schools was created for team practice sessions. It combines scoring and timing into one platform to give training teams an experience similar to what happens on stage at TVJ. At TVJ, students are only allowed see their numerical scores increase (or decrease in the buzzer section) without knowing which questions were answered correctly or incorrectly. 
+The School's Challenge Quiz Scoreboard for secondary-level schools was created for team practice sessions. It combines scoring and timing into one platform to give training teams an experience similar to what happens on stage at TVJ. At TVJ, students are only allowed to see their numerical scores increase (or decrease in the buzzer section) without knowing which questions were answered correctly or incorrectly. 
 During practice, teams sit in the same positions they would on television and follow the same match format. Now, scoring and timing are displayed in the same style as the TV version with this platform.
 
-The control panel which is not visible to students, allows coaches to track scores and manage time together. 
+The control panel which is not visible to students, allows coaches to track scores and manage time simultaneously. 
 
-However, since there were some observed benefits to the way it was normally done in practice, the control panel still tracks scores in that method. Benefits to tracking scores with the method currently used in training include: 
+However, since there were some observed benefits to the way it was normally done in practice, the control panel still tracks scores in the manual method. Benefits to tracking scores with the manual method in training include: 
 
 • Seeing how many questions were faced in the alternate or speed sections
 • Identify which questions were answered incorrectly in each section for quering purposes
 • Observe the team’s buzzing patterns
 
-Version 1.0
+Version 1.1.0
     </pre>
   </div>
 </div>

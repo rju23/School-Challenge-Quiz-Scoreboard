@@ -1,3 +1,5 @@
+const { app, BrowserWindow, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
@@ -38,7 +40,28 @@ function createWindows() {
   // Handle window close
   controlPanelWindow.on('closed', () => { controlPanelWindow = null; });
   mainScoreboardWindow.on('closed', () => { mainScoreboardWindow = null; });
+
+autoUpdater.checkForUpdatesAndNotify();
 }
+
+autoUpdater.on('update-available', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Available',
+    message: 'A new version is available. It will download in the background.'
+  });
+});
+
+autoUpdater.on('update-downloaded', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Ready',
+    message: 'Update downloaded. Restart the app to apply it.',
+    buttons: ['Restart Now']
+  }).then(() => {
+    autoUpdater.quitAndInstall();
+  });
+});
 
 app.whenReady().then(createWindows);
 
