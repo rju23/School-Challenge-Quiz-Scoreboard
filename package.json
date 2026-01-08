@@ -1,33 +1,14 @@
 {
   "name": "schools-challenge-quiz-scoreboard",
   "version": "1.1.0",
-  "description": "Desktop scoreboard platform for Schools' Challenge Quiz training",
+  "description": "Desktop version of the scoreboard platform for Schools' Challenge Quiz training",
   "main": "main.js",
   "author": "Prakash Sejwani",
   "license": "MIT",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder --win"
+    "start": "electron ."
   },
   "devDependencies": {
-    "electron": "^26.2.0",
-    "electron-builder": "^24.13.3"
-  },
-  "build": {
-    "appId": "com.schoolschallenge.quizscoreboard",
-    "productName": "Quiz Scoreboard",
-    "win": {
-      "target": "nsis"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "rju23",
-        "repo": "School-Challenge-Quiz-Scoreboard"
-      }
-    ]
-  },
-  "dependencies": {
-    "electron-updater": "^6.7.3"
+    "electron": "^26.2.0"
   }
 }
