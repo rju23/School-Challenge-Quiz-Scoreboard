@@ -1,14 +1,16 @@
 {
   "name": "schools-challenge-quiz-scoreboard",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Desktop version of the scoreboard platform for Schools' Challenge Quiz training",
   "main": "main.js",
   "author": "Prakash Sejwani",
   "license": "MIT",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^26.2.0"
+    "electron": "^26.2.0",
+    "electron-builder": "^26.4.0"
   }
 }
