@@ -3,25 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Quiz Scoreboard</title>
+
+
   <style>
-    #visualOverlay {
+
+#visualManager {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
+  right: -260px;              /* hidden by default */
+  width: 260px;
   height: 100vh;
-  background: black;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  background: #111;
+  border-left: 2px solid #444;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 10000;
+  transition: right 0.3s ease;
 }
 
-#visualImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* ensures full coverage */
+/* Visible state */
+#visualManager.open {
+  right: 0;
 }
+
+/* Toggle button */
+#toggleVisualPanel {
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 60px;
+  background: #111;
+  color: white;
+  border: 1px solid #444;
+  cursor: pointer;
+}
+
+/* Scrollable visual list */
+#visualList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+
+  overflow-y: auto;                      /* ✅ enable scroll */
+  max-height: calc(100vh - 120px);       /* ✅ leave room for buttons */
+}
+
+/* Auto-resizing thumbnails */
+#visualList img {
+  width: 100%;
+  max-height: 60px;                      /* 🔧 controls size */
+  height: auto;
+  object-fit: contain;
+
+  border: 2px solid #555;
+  cursor: grab;
+  user-select: none;
+}
+
 
     html, body {
       margin: 0;
@@ -97,6 +138,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
+    
 
     @media screen and (max-width: 1200px) {
       .team h2 { font-size: 2rem; }
@@ -110,6 +152,7 @@
   <h1>Quiz Scoreboard</h1>
 
   <button id="fullscreenBtn" onclick="toggleFullscreen()">Fullscreen</button>
+  
 
   <div class="teams-container">
     <!-- Team A -->
@@ -131,7 +174,6 @@
   </div>
 
   <script>
-localStorage.removeItem("showVisualTrigger");
 
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
@@ -142,45 +184,167 @@ localStorage.removeItem("showVisualTrigger");
         }
       }
     }
+  </script>
+</div>
 
-function showVisualImage() {
-  const visualsReady = localStorage.getItem("visualsReady");
-  if (visualsReady !== "true") return;
+<!-- Visual Manager (Main Scoreboard Only) -->
+<div id="visualManager">
+  <button id="toggleVisualPanel">◀</button>
 
-  const queue = JSON.parse(localStorage.getItem("visualQueue")) || [];
-  let index = parseInt(localStorage.getItem("currentVisualIndex")) || 0;
+  <input type="file" id="visualUpload" accept="image/*" multiple>
+  <div id="visualList"></div>
+</div>
 
-  if (!queue.length || index >= queue.length) return;
+  <script>
+let currentVisualIndex = 0;
+let visuals = [];
 
+const upload = document.getElementById("visualUpload");
+const list = document.getElementById("visualList");
+
+/* ==========================
+   UPLOAD VISUALS
+========================== */
+upload.addEventListener("change", (e) => {
+  visuals = [];
+  list.innerHTML = "";
+  currentVisualIndex = 0;
+
+  Array.from(e.target.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      visuals.push(ev.target.result);
+      render();
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+/* ==========================
+   RENDER LIST WITH ↑ ↓ BUTTONS
+========================== */
+function render() {
+  list.innerHTML = "";
+
+  visuals.forEach((src, i) => {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.alignItems = "center";
+    row.style.gap = "6px";
+
+    const img = document.createElement("img");
+    img.src = src;
+
+    const controls = document.createElement("div");
+    controls.style.display = "flex";
+    controls.style.flexDirection = "column";
+    controls.style.gap = "2px";
+
+    const upBtn = document.createElement("button");
+    upBtn.textContent = "▲";
+    upBtn.disabled = i === 0;
+    upBtn.onclick = () => moveVisual(i, -1);
+
+    const downBtn = document.createElement("button");
+    downBtn.textContent = "▼";
+    downBtn.disabled = i === visuals.length - 1;
+    downBtn.onclick = () => moveVisual(i, 1);
+
+    controls.appendChild(upBtn);
+    controls.appendChild(downBtn);
+
+    row.appendChild(img);
+    row.appendChild(controls);
+    list.appendChild(row);
+  });
+}
+
+/* ==========================
+   MOVE VISUALS
+========================== */
+function moveVisual(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= visuals.length) return;
+
+  const temp = visuals[index];
+  visuals[index] = visuals[newIndex];
+  visuals[newIndex] = temp;
+
+  // Keep currentVisualIndex valid
+  if (currentVisualIndex > visuals.length) {
+    currentVisualIndex = visuals.length;
+  }
+
+  render();
+}
+
+/* ==========================
+   LISTEN FOR CONTROL PANEL
+========================== */
+let lastVisualTime = 0;
+
+setInterval(() => {
+  const msg = localStorage.getItem("visualCommand");
+  if (!msg) return;
+
+  try {
+    const data = JSON.parse(msg);
+    if (data.time <= lastVisualTime) return;
+
+    lastVisualTime = data.time;
+    if (!visuals.length) return;
+
+    if (currentVisualIndex >= visuals.length) {
+      currentVisualIndex = 0; // loop safely
+    }
+
+    showVisual(visuals[currentVisualIndex]);
+    currentVisualIndex++;
+  } catch {}
+}, 200);
+
+/* ==========================
+   SHOW VISUAL OVERLAY
+========================== */
+function showVisual(src) {
   const overlay = document.getElementById("visualOverlay");
   const img = document.getElementById("visualImage");
 
-  img.src = queue[index];
+  img.src = src;
   overlay.style.display = "flex";
 
   setTimeout(() => {
     overlay.style.display = "none";
-    localStorage.setItem("currentVisualIndex", index + 1);
-  }, 2000);
+  }, 3000);
 }
 
+/* ==========================
+   TOGGLE VISUAL PANEL
+========================== */
+const panel = document.getElementById("visualManager");
+const toggleBtn = document.getElementById("toggleVisualPanel");
 
-// Listen for the control panel trigger
-let lastTrigger = null;
+toggleBtn.addEventListener("click", () => {
+  panel.classList.toggle("open");
+  toggleBtn.textContent = panel.classList.contains("open") ? "▶" : "◀";
+});
 
-setInterval(() => {
-  const trigger = localStorage.getItem("showVisualTrigger");
-  if (trigger && trigger !== lastTrigger) {
-    lastTrigger = trigger;
-    showVisualImage();
-  }
-}, 100);
 
-  </script>
-  <script src="script.js"></script>
-
-<div id="visualOverlay">
-  <img id="visualImage">
+</script>
+<div id="visualOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img id="visualImage" style="
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  ">
 </div>
 </body>
 </html>

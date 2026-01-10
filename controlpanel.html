@@ -116,12 +116,6 @@
 
 <div id="settingsOverlay" class="overlay" onclick="closeSettings()"></div>
 
-<!-- Visual Upload -->
-<div class="visual-upload">
-  <label><strong>Upload Visual Questions</strong></label><br>
-  <input type="file" id="imageUpload" accept="image/*" multiple>
-</div>
-
 
 <!-- SETTINGS POPUP WITH TABS -->
 <div id="settingsPopup" class="popup">
@@ -223,10 +217,14 @@ Procedure:
 Bell sound plays if time expires before an answer.
 
 - Visual Questions Upload
-This is the newest feature added in version 1.1.0. Upload images of visual questions in the order you want for the entire match using the "Upload Visual Questions" section in the control panel. 
-Then, during the match, double-tap the right arrow key to display the next visual question on the main scoreboard screen. This visual will stay visible for 2s after which it will automatically hide. 
-Note that you CANNOT cycle through the visuals again, the control panel has to be reloaded (Ctrl + R) and the same or new visuals reuploaded to reset the visual queue.
-To get the best view, ensure that images are landscape oriented and of high resolution. A canva link has been provided below to help you create custom visual question slides:
+This is the newest feature added in version 1.1.0 series. Version 1.1.1 updates the visuals feature. How to do it -
+1. Download your visuals
+2. Open the main scoreboard and select the toggle arrow on the right to open the visuals panel.
+3. Click the "Upload Visuals" button and select your visuals file.
+4. Reorder visuals by using the up or down arrows next to each visual.
+5. During the match, while in the control panel, double-tap the right arrow key on your keyboard to show the next visual on the main scoreboard screen.
+
+Visuals Template Link: This is a link to a Canva template you can use to create your visuals in the right aspect ratio.
 https://www.canva.com/design/DAG9viZJQ3Q/ixtnxn9PeTSVQZrxRUlczw/edit?utm_content=DAG9viZJQ3Q&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
     </pre>
   </div>
@@ -235,7 +233,7 @@ https://www.canva.com/design/DAG9viZJQ3Q/ixtnxn9PeTSVQZrxRUlczw/edit?utm_content
   <div id="about" class="tab-content hidden">
     <pre style="white-space: pre-wrap; font-family: inherit;">
 About
-v1.1.0 now comes as desktop downloadable version.
+v1.1.1 now comes as desktop downloadable version.
 
 The School's Challenge Quiz Scoreboard for secondary-level schools was created for team practice sessions. It combines scoring and timing into one platform to give training teams an experience similar to what happens on stage at TVJ. At TVJ, students are only allowed to see their numerical scores increase (or decrease in the buzzer section) without knowing which questions were answered correctly or incorrectly. 
 During practice, teams sit in the same positions they would on television and follow the same match format. Now, scoring and timing are displayed in the same style as the TV version with this platform.
@@ -248,17 +246,44 @@ However, since there were some observed benefits to the way it was normally done
 • Identify which questions were answered incorrectly in each section for quering purposes
 • Observe the team’s buzzing patterns
 
-Version 1.1.0
+Version 1.1.1
     </pre>
   </div>
 </div>
 
+<button id="nextVisualBtn" style="display:none;">Show Next Visual</button>
+
+
 <script>
-// Clear previous visual data on fresh load
-localStorage.removeItem("visualQueue");
-localStorage.removeItem("currentVisualIndex");
-localStorage.removeItem("showVisualTrigger");
-localStorage.setItem("visualsReady", "false");
+document.getElementById("nextVisualBtn").addEventListener("click", () => {
+  localStorage.setItem(
+    "visualCommand",
+    JSON.stringify({ time: Date.now() })
+  );
+});
+
+function triggerNextVisual() {
+  localStorage.setItem(
+    "visualCommand",
+    JSON.stringify({ time: Date.now() })
+  );
+}
+
+let lastRightArrowTime = 0;
+const DOUBLE_TAP_DELAY = 400; // ms
+
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "ArrowRight") return;
+
+  const now = Date.now();
+
+  if (now - lastRightArrowTime < DOUBLE_TAP_DELAY) {
+    triggerNextVisual();
+    lastRightArrowTime = 0; // reset
+  } else {
+    lastRightArrowTime = now;
+  }
+});
 
 function openTab(tabId) {
   // Hide all tab contents
@@ -302,37 +327,6 @@ document.addEventListener("keydown", function(event) {
   }
 });
 
-// Visual Upload Logic
-document.getElementById("imageUpload").addEventListener("change", function (e) {
-  const files = Array.from(e.target.files);
-
-  // Reset queue explicitly
-  visualQueue = [];
-  localStorage.setItem("currentVisualIndex", 0);
-
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      visualQueue.push(event.target.result);
-      localStorage.setItem("visualQueue", JSON.stringify(visualQueue));
-      localStorage.setItem("visualsReady", "true");
-    };
-    reader.readAsDataURL(file);
-  });
-});
-
-// Double Right Arrow Trigger
-let lastArrowTime = 0;
-
-document.addEventListener("keydown", function (e) {
-  if (e.key === "ArrowRight") {
-    const now = Date.now();
-    if (now - lastArrowTime < 400) { // double tap detection
-      localStorage.setItem("showVisualTrigger", Date.now());
-    }
-    lastArrowTime = now;
-  }
-});
 </script>
 
 </body>
